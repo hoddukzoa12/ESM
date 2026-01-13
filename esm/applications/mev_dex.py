@@ -378,21 +378,28 @@ class MEVResistantDEX(ESMApplication):
             winner_input = float(victim.input_amount)
             winner_output = self.calculate_output(pool, victim.input_token, victim.input_amount)
         elif interference_type == "destructive_partial":
-            # Partial destructive - heavily favor victim but not deterministic
-            # Use weighted collapse favoring victim
+            # Partial destructive - calculate victim probability from interference factor
+            # Formula: victim_prob = 0.5 + 0.5 * |interference_factor|
+            # For P135: cos(135°) ≈ -0.707, so victim_prob ≈ 0.5 + 0.5 * 0.707 ≈ 0.854
+            # This models how destructive interference reduces attacker's effective amplitude
             import random
             if seed is not None:
                 random.seed(seed)
-            # 85% chance victim wins with partial destructive
-            if random.random() < 0.85:
+            # Calculate interference factor from phase difference
+            from esm.core.phase import COS_TABLE
+            phase_diff = (attacker.phase - victim.phase) % 8
+            interference_factor = COS_TABLE[DiscretePhase(phase_diff)]
+            # Victim probability increases with destructive interference (negative factor)
+            victim_prob = 0.5 + 0.5 * abs(interference_factor)
+            if random.random() < victim_prob:
                 winner_trader = victim.trader
                 winner_input = float(victim.input_amount)
                 winner_output = self.calculate_output(pool, victim.input_token, victim.input_amount)
             else:
-                selected_state, selected_branch = psc.collapse(seed=seed)
-                winner_trader = selected_branch.state_data["trader"]
-                winner_input = selected_branch.state_data["input_amount"]
-                winner_output = Decimal(str(selected_branch.state_data["output_amount"]))
+                # Attacker wins - no PSC collapse needed since probability already calculated
+                winner_trader = attacker.trader
+                winner_input = float(attacker.input_amount)
+                winner_output = self.calculate_output(pool, attacker.input_token, attacker.input_amount)
         else:
             # Normal collapse for orthogonal or constructive interference
             selected_state, selected_branch = psc.collapse(seed=seed)

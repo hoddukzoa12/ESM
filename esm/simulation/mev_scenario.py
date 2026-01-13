@@ -197,7 +197,13 @@ def simulate_sandwich_attack(
         delay = max(0, np.random.normal(attack_delay_mean, attack_delay_std))
         delays_ms.append(delay)
 
-        # Traditional chain: attack always succeeds
+        # Traditional chain comparison baseline
+        # NOTE: This is a simplified assumption for comparison purposes.
+        # On traditional chains without MEV protection, front-running attacks
+        # are estimated to succeed ~90-95% of the time in favorable conditions.
+        # Real-world success rates vary by: DEX design, network congestion,
+        # private mempool usage, and Flashbots-style MEV protection adoption.
+        # For this simulation, we assume 100% success to show maximum MEV exposure.
         traditional_profit = victim_amount * mev_extraction_rate
         traditional_profits.append(traditional_profit)
 
