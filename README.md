@@ -4,7 +4,7 @@ A Python simulation framework for the Entangled State Machine (ESM) probabilisti
 
 ## Overview
 
-ESM Simulator implements the core mechanisms described in the ESM Whitepaper v5.3, providing tools for simulating and visualizing quantum-inspired blockchain operations including MEV resistance, privacy transfers, and probabilistic state management.
+ESM Simulator implements the core mechanisms described in the ESM Whitepaper v5.4, providing tools for simulating and visualizing quantum-inspired blockchain operations including MEV resistance, privacy transfers, and probabilistic state management.
 
 ## Features
 
@@ -48,7 +48,7 @@ esm_simulator/
 
 ## Documentation
 
-- [ESM Whitepaper v5.3](./ESM_Whitepaper_v5.4_EN.pdf)
+- [ESM Whitepaper v5.4](./ESM_Whitepaper_v5.4_EN.pdf)
 
 ## License
 
